@@ -52,34 +52,6 @@ public final class SparseGraph<V, E> implements Graph<V, E> {
             this.removed = false;
         }
 
-        // Easier to check for duplicate edges, using Collection.contains(),
-        // if we override edges to compare only their to-from vertices and not
-        // their data. Something similar was done in ChainingHashMap's Entry
-        // subclass in the previous assignment (it only compares keys, not
-        // data), so I'm assuming this is ok.
-        @Override @SuppressWarnings("unchecked")
-        public boolean equals(Object obj) {
-            if (obj == null) {
-                return false;
-            } else if (obj == this) {
-                return true;
-            } else if (!(obj instanceof SparseGraph.DirectedEdge)) {
-                return false;
-            }
-
-            DirectedEdge e = (DirectedEdge) obj;
-            return e.from.equals(this.from) && e.to.equals(this.to);
-        }
-
-        @Override
-        public int hashCode() {
-            E temp = this.data;
-            this.data = null;
-            int hash = super.hashCode();
-            this.data = temp;
-            return hash;
-        }
-
         @Override
         public E get() { return this.data; }
         @Override
@@ -141,6 +113,16 @@ public final class SparseGraph<V, E> implements Graph<V, E> {
         return newVertex;
     }
 
+    private boolean isDuplicateEdge(Collection<DirectedEdge> c, 
+          IncidenceVertex from, IncidenceVertex to) {
+        for (DirectedEdge e : c) {
+            if (e.from == from && e.to == to) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public Edge<E> insert(Vertex<V> from, Vertex<V> to, E e) {
         DirectedEdge insert;
@@ -154,13 +136,13 @@ public final class SparseGraph<V, E> implements Graph<V, E> {
         }
         f = this.validateVertex(from);
         t = this.validateVertex(to);
-        insert = new DirectedEdge(f, t, e);
         search = f.outgoing.size() <= t.incoming.size()
             ? f.outgoing : t.incoming;
-        if (search.contains(insert)) {
+        if (isDuplicateEdge(search, f, t)) {
             throw new IllegalArgumentException("Can't insert duplicate edges.");
         }
 
+        insert = new DirectedEdge(f, t, e);
         f.outgoing.add(insert);
         t.incoming.add(insert);
         this.edges.add(insert);

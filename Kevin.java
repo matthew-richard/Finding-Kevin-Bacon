@@ -93,7 +93,7 @@ public final class Kevin {
         Queue<Vertex<String>> q = new LinkedList<Vertex<String>>();
         q.add(bacon);
         graph.label(bacon, 0);
-/*
+
         // find path
         Vertex<String> top = q.peek();
         while (top != actor) { // while queue !empty
@@ -126,7 +126,7 @@ public final class Kevin {
             }
         }
         System.out.println(doubleBacon / 2);
-        System.exit(0);*/
+        System.exit(0);
     }
 
     /**
