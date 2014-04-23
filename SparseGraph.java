@@ -3,6 +3,8 @@ import java.util.LinkedList;
 /**
     A directed graph implementation optimized for sparse graphs.
 
+    Incidence lists are used to keep track of adjacencies.
+
     @param <V> Type of vertex element
     @param <E> Type of edge element
 */
@@ -52,9 +54,9 @@ public class SparseGraph<V, E> implements Graph<V, E> {
         // Easier to check for duplicate edges, using Collection.contains(),
         // if we override edges to compare only their to-from vertices and not
         // their data. Something similar was done in ChainingHashMap's Entry
-        // subclass in the previous assignment (only compare keys and not data),
-        // so I'm assuming this is ok.
-        @Override @SuppressWarnings("unchecked")
+        // subclass in the previous assignment (it only compares keys, not
+        // data), so I'm assuming this is ok.
+        @Override @SuppressWarnings("unchecked") // We're typesafe because we use instanceof.
         public boolean equals(Object obj) {
             if (obj == null)
                 return false;
@@ -85,7 +87,7 @@ public class SparseGraph<V, E> implements Graph<V, E> {
         this.edges = new LinkedList<DirectedEdge>();
     } 
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") // We're typesafe because we use instanceof.
     private IncidenceVertex validateVertex(Vertex<V> v)
         throws IllegalArgumentException {
         if (v == null)
@@ -99,7 +101,7 @@ public class SparseGraph<V, E> implements Graph<V, E> {
         return validee;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") // We're typesafe because we use instanceof.
     private DirectedEdge validateEdge(Edge<E> e)
         throws IllegalArgumentException {
         if (e == null)
