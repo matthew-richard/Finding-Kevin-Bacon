@@ -22,7 +22,7 @@ public class TestGraph {
         }
     };
 
-/*    @Theory
+    @Theory
     public void verticesInitiallyEmpty(Fixture f) {
         Graph<String, Integer> g = f.init();
         assertTrue(!g.vertices().iterator().hasNext());
@@ -40,7 +40,7 @@ public class TestGraph {
         Vertex<String> ins = g.insert("Inserted");
         assertEquals(g.vertices().iterator().next(), ins);
     }
-    
+   
     @Theory
     public void insertedVertexNoOutgoing(Fixture f) {
         Graph<String, Integer> g = f.init();
@@ -81,6 +81,7 @@ public class TestGraph {
     public void removedVertexNotInVertices(Fixture f) {
         Graph<String, Integer> g = f.init();
         Vertex<String> ins = g.insert("Inserted");
+        g.remove(ins);
         assertTrue(!g.vertices().iterator().hasNext());
     }
     
@@ -90,6 +91,7 @@ public class TestGraph {
         Vertex<String> a = g.insert("Hi");
         Vertex<String> b = g.insert("Bye");
         Edge<Integer> ins = g.insert(a, b, 43);
+        g.remove(ins);
         assertTrue(!g.edges().iterator().hasNext());
     }
 
@@ -138,7 +140,7 @@ public class TestGraph {
         Edge<Integer> ins = g.insert(a, b, 43);
         assertEquals(g.incoming(b).iterator().next(), ins);
     }
-    
+
     @Theory
     public void insertedEdgeCorrectValue(Fixture f) {
         Graph<String, Integer> g = f.init();
@@ -164,11 +166,11 @@ public class TestGraph {
         Vertex<String> a = g.insert("Hi");
         Vertex<String> b = g.insert("Bye");
         Edge<Integer> ins = g.insert(a, b, 43);
-        assertEquals(g.label(ins), true);
+        assertEquals(g.label(ins), null);
     }
 
     @Theory
-    public void labelVertex(Fixture f) {
+    public void labelVertexAssignsLabel(Fixture f) {
         Graph<String, Integer> g = f.init();
         Vertex<String> ins = g.insert("Hi");
         g.label(ins, true);
@@ -176,7 +178,7 @@ public class TestGraph {
     }
 
     @Theory
-    public void labelEdge(Fixture f) {
+    public void labelEdgeAssignsLabel(Fixture f) {
         Graph<String, Integer> g = f.init();
         Vertex<String> a = g.insert("Hi");
         Vertex<String> b = g.insert("Bye");
@@ -202,7 +204,7 @@ public class TestGraph {
 
 
     // Testing exception-throwing:
-*/
+
     @Theory @Test (expected=IllegalArgumentException.class)
     public void cantInsertDuplicateEdge(Fixture f) {
         Graph<String, Integer> g = f.init();
@@ -218,7 +220,7 @@ public class TestGraph {
         Vertex<String> a = g.insert("Hello");
         Edge<Integer> ins = g.insert(a, a, 36);
     }
-/*
+
     @Theory @Test (expected=IllegalArgumentException.class)
     public void cantRemoveVertexWithOutgoing(Fixture f) {
         Graph<String, Integer> g = f.init();
@@ -235,7 +237,7 @@ public class TestGraph {
         Vertex<String> b = g.insert("Bye");
         Edge<Integer> ins = g.insert(a, b, 43);
         g.remove(b);
-    }*/
+    }
 
     @Theory @Test (expected=IllegalArgumentException.class)
     public void insertEdgeStopsNull(Fixture f) {
@@ -263,7 +265,7 @@ public class TestGraph {
     }
 
 
-    /*@Theory @Test (expected=IllegalArgumentException.class)
+    @Theory @Test (expected=IllegalArgumentException.class)
     public void removeVertexStopsNull(Fixture f) {
         Graph<String, Integer> g = f.init();
         Vertex<String> a = g.insert("Hi");
@@ -315,7 +317,6 @@ public class TestGraph {
         g.remove(ins);
     }
 
- 
     @Theory @Test (expected=IllegalArgumentException.class)
     public void outgoingStopsNull(Fixture f) {
         Graph<String, Integer> g = f.init();
@@ -351,6 +352,7 @@ public class TestGraph {
     public void incomingStopsRemoved(Fixture f) {
         Graph<String, Integer> g = f.init();
         Vertex<String> a = g.insert("Hi");
+        g.remove(a);
         g.incoming(a);
     }
 
@@ -523,5 +525,21 @@ public class TestGraph {
         Vertex<String> b = h.insert("Bye");
         Edge<Integer> ins = h.insert(a, b, 43);
         g.label(ins);
-    } */
+    } 
+    
+    @Theory @Test (expected=IllegalArgumentException.class)
+    public void cantAssignNullLabelVertex(Fixture f) {
+        Graph<String, Integer> g = f.init();
+        Vertex<String> ins = g.insert("Hi");
+        g.label(ins, null);
+    }
+
+    @Theory @Test (expected=IllegalArgumentException.class)
+    public void cantAssignNullLabelEdge(Fixture f) {
+        Graph<String, Integer> g = f.init();
+        Vertex<String> a = g.insert("Hi");
+        Vertex<String> b = g.insert("Bye");
+        Edge<Integer> ins = g.insert(a, b, 43);
+        g.label(ins, null);
+    }
 }

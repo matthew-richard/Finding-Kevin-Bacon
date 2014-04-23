@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
     A directed graph implementation optimized for sparse graphs.
@@ -9,15 +9,15 @@ import java.util.ArrayList;
 public class SparseGraph<V, E> implements Graph<V, E> {
     private class IncidenceVertex implements Vertex<V> {
         public IncidenceVertex(V d) {
-            this.outgoing = new ArrayList<DirectedEdge>();
-            this.incoming = new ArrayList<DirectedEdge>();
+            this.outgoing = new LinkedList<DirectedEdge>();
+            this.incoming = new LinkedList<DirectedEdge>();
             this.data = d;
             this.label = null;
             this.removed = false;
         }
 
-        public ArrayList<DirectedEdge> outgoing;
-        public ArrayList<DirectedEdge> incoming;
+        public LinkedList<DirectedEdge> outgoing;
+        public LinkedList<DirectedEdge> incoming;
 
         public V data;
         public Object label;
@@ -50,12 +50,12 @@ public class SparseGraph<V, E> implements Graph<V, E> {
         public boolean removed;
 
         @Override
-        public boolean equals(Object obj) {
+        public boolean equals(Object obj) { // easier to check for duplicate edges
             if (obj == null)
                 return false;
             if (obj == this)
                 return true;
-            if (!(obj instanceof SparseGraph.IncidenceVertex))
+            if (!(obj instanceof SparseGraph.DirectedEdge))
                 return false;
 
             DirectedEdge e = (DirectedEdge) obj;
@@ -72,31 +72,24 @@ public class SparseGraph<V, E> implements Graph<V, E> {
         }
     }
 
-    private ArrayList<IncidenceVertex> vertices;
-    private ArrayList<DirectedEdge> edges;
+    private LinkedList<IncidenceVertex> vertices;
+    private LinkedList<DirectedEdge> edges;
 
-    /*private <T extends Position<?>> T validatePosition(Position<?> p)
-        throws IllegalArgumentException {
-        if (p == null)
-            throw new IllegalArgumentException("Inputted Vertex is null.");
-        else if (!(p instanceof T))
-            throw new IllegalArgumentException("Inputted Vertex unusable by SparseGraph.");
-        T validee = p;
-        if (!(v.manufacturer == this))
-            throw new IllegalArgumentException("Inputted Vertex does not"
-                + "belong to this SparseGraph.");
-        return validee;
-    }*/
+    public SparseGraph() {
+        this.vertices = new LinkedList<IncidenceVertex>();
+        this.edges = new LinkedList<DirectedEdge>();
+    } 
+
     private IncidenceVertex validateVertex(Vertex<V> v)
         throws IllegalArgumentException {
-        /*if (v == null)
+        if (v == null)
             throw new IllegalArgumentException("Inputted Vertex is null.");
-        else*/ if (!(v instanceof SparseGraph.IncidenceVertex))
+        else if (!(v instanceof SparseGraph.IncidenceVertex))
             throw new IllegalArgumentException("Inputted Vertex unusable by SparseGraph.");
         IncidenceVertex validee = (IncidenceVertex) v;
-        /*if (!(validee.manufacturer() == this))
+        if (!(validee.manufacturer() == this))
             throw new IllegalArgumentException("Inputted Vertex does not"
-                + "belong to this SparseGraph.");*/
+                + "belong to this SparseGraph.");
         return validee;
     }
 
@@ -113,11 +106,6 @@ public class SparseGraph<V, E> implements Graph<V, E> {
         return validee;
     }
 
-    public SparseGraph() {
-        this.vertices = new ArrayList<IncidenceVertex>();
-        this.edges = new ArrayList<DirectedEdge>();
-    } 
-
     @Override
     public Vertex<V> insert(V v) {
         IncidenceVertex newVertex = new IncidenceVertex(v);
@@ -127,83 +115,131 @@ public class SparseGraph<V, E> implements Graph<V, E> {
 
     @Override
     public Edge<E> insert(Vertex<V> from, Vertex<V> to, E e) {
-        DirectedEdge toInsert;
+        DirectedEdge insert;
         IncidenceVertex f;
         IncidenceVertex t;
-        ArrayList<DirectedEdge> toSearch;
+        
+        // validation
+        LinkedList<DirectedEdge> search;
         if (from == to)
             throw new IllegalArgumentException("Can't create self-loops.");
         f = this.validateVertex(from);
         t = this.validateVertex(to);
-        toInsert = new DirectedEdge(f, t, e);
-        toSearch = f.outgoing.size() <= t.incoming.size() ? f.outgoing : t.incoming;
-        if (toSearch.contains(toInsert))
+        insert = new DirectedEdge(f, t, e);
+        search = f.outgoing.size() <= t.incoming.size() ? f.outgoing : t.incoming;
+        if (search.contains(insert))
             throw new IllegalArgumentException("Can't insert duplicate edges.");
-        return null;
+
+        f.outgoing.add(insert);
+        t.incoming.add(insert);
+        this.edges.add(insert);
+        
+        return insert;
     }
 
     @Override
-    public V remove(Vertex<V> v) {
-        return null;
+    public V remove(Vertex<V> vertex) {
+        // validation
+        IncidenceVertex v = this.validateVertex(vertex);
+        if (!(v.outgoing.isEmpty() && v.incoming.isEmpty()))
+            throw new IllegalArgumentException("Can't remove Vertex with incoming or outgoing edges");
+
+        v.removed = true;
+        this.vertices.remove(v);
+
+        return v.data;
     }
 
     @Override
-    public E remove(Edge<E> e) {
-        return null;
+    public E remove(Edge<E> edge) {
+        DirectedEdge e = this.validateEdge(edge);
+
+        e.removed = true;
+        e.from.outgoing.remove(e);
+        e.to.incoming.remove(e);
+        this.edges.remove(e);
+        
+        return e.data;
     }
 
     @Override
     public Iterable<Vertex<V>> vertices() {
-        return null;
+        LinkedList<Vertex<V>> list = new LinkedList<Vertex<V>>();
+        list.addAll(this.vertices);
+        return list;
     }
 
     @Override
     public Iterable<Edge<E>> edges() {
-        return null;
+        LinkedList<Edge<E>> list = new LinkedList<Edge<E>>();
+        list.addAll(this.edges);
+        return list;
     }
 
     @Override
-    public Iterable<Edge<E>> outgoing(Vertex<V> v) {
-        return null;
+    public Iterable<Edge<E>> outgoing(Vertex<V> vertex) {
+        IncidenceVertex v = this.validateVertex(vertex);
+        LinkedList<Edge<E>> list = new LinkedList<Edge<E>>();
+        list.addAll(v.outgoing);
+        return list;
     }
 
     @Override
-    public Iterable<Edge<E>> incoming(Vertex<V> v) {
-        return null;
+    public Iterable<Edge<E>> incoming(Vertex<V> vertex) {
+        IncidenceVertex v = this.validateVertex(vertex);
+        LinkedList<Edge<E>> list = new LinkedList<Edge<E>>();
+        list.addAll(v.incoming);
+        return list;
     }
 
     @Override
-    public Vertex<V> from(Edge<E> e) {
-        return null;
+    public Vertex<V> from(Edge<E> edge) {
+        DirectedEdge e = this.validateEdge(edge);
+        return e.from;
     }
 
     @Override
-    public Vertex<V> to(Edge<E> e) {
-        return null;
+    public Vertex<V> to(Edge<E> edge) {
+        DirectedEdge e = this.validateEdge(edge);
+        return e.to;
     }
 
     @Override
-    public void label(Vertex<V> v, Object l) {
+    public void label(Vertex<V> vertex, Object l) {
+        IncidenceVertex v = this.validateVertex(vertex);
+        if (l == null)
+            throw new IllegalArgumentException("Can't label null.");
+        v.label = l;
         return;
     }
 
     @Override
-    public void label(Edge<E> e, Object l) {
+    public void label(Edge<E> edge, Object l) {
+        DirectedEdge e = this.validateEdge(edge);
+        if (l == null)
+            throw new IllegalArgumentException("Can't label null.");
+        e.label = l;
         return;
     }
 
     @Override
-    public Object label(Vertex<V> v) {
-        return null;
+    public Object label(Vertex<V> vertex) {
+        IncidenceVertex v = this.validateVertex(vertex);
+        return v.label;
     }
 
     @Override
-    public Object label(Edge<E> e) {
-        return null;
+    public Object label(Edge<E> edge) {
+        DirectedEdge e = this.validateEdge(edge);
+        return e.label;
     }
 
     @Override
     public void clearLabels() {
+        for (IncidenceVertex v : this.vertices)
+            v.label = null;
+        for (DirectedEdge e : this.edges)
+            e.label = null;
         return;
     }
 
