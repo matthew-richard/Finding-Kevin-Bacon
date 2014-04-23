@@ -90,7 +90,28 @@ public final class Kevin {
     // back to Kevin Bacon and exit the program. Since we're using BFS
     // we can be sure that the resulting path is among the shortest ones.
     private static void solveBacon() {
-        // put your code here, use System.exit(0) to stop after printing!
+        int result = 0;
+        boolean found = false;
+        Queue<Vertex<String>> toCheck = new LinkedList<Vertex<String>>();
+        toCheck.add(bacon);
+        graph.label(bacon, 0);
+        while (toCheck.peek() != null) { // while queue !empty
+            int distance = (Integer)graph.label(toCheck.peek()) + 1;
+            if (toCheck.peek() == actor) {
+                found = true;
+                result = distance;
+                break;
+            }
+            for (Edge<String> e : graph.outgoing(toCheck.peek())) {
+                if (graph.label(graph.to(e)) == null) {
+                    toCheck.add(graph.to(e));
+                    graph.label(graph.to(e), distance);
+                }
+            }
+            toCheck.remove();
+        }
+        System.out.println(result/2);
+        System.exit(0);
     }
 
     /**
