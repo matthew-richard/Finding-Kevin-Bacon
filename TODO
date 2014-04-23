@@ -1,0 +1,8 @@
+checkstyle!
+
+optimize bst
+  --reduce calls to validation functions
+Use HashSet for:
+  edges, vertices, incoming, outgoing, 
+
+switch out from overloading equals

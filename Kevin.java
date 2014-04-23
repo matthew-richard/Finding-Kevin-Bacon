@@ -90,28 +90,43 @@ public final class Kevin {
     // back to Kevin Bacon and exit the program. Since we're using BFS
     // we can be sure that the resulting path is among the shortest ones.
     private static void solveBacon() {
-        int result = 0;
-        boolean found = false;
-        Queue<Vertex<String>> toCheck = new LinkedList<Vertex<String>>();
-        toCheck.add(bacon);
+        Queue<Vertex<String>> q = new LinkedList<Vertex<String>>();
+        q.add(bacon);
         graph.label(bacon, 0);
-        while (toCheck.peek() != null) { // while queue !empty
-            int distance = (Integer)graph.label(toCheck.peek()) + 1;
-            if (toCheck.peek() == actor) {
-                found = true;
-                result = distance;
-                break;
-            }
-            for (Edge<String> e : graph.outgoing(toCheck.peek())) {
-                if (graph.label(graph.to(e)) == null) {
-                    toCheck.add(graph.to(e));
-                    graph.label(graph.to(e), distance);
+/*
+        // find path
+        Vertex<String> top = q.peek();
+        while (top != actor) { // while queue !empty
+            int distance = (Integer) graph.label(top) + 1;
+            Iterable<Edge<String>> outs = graph.outgoing(top);
+            for (Edge<String> e : outs) {
+                Vertex<String> to = graph.to(e);
+                if (graph.label(to) == null) {
+                    q.add(to);
+                    graph.label(to, distance);
                 }
             }
-            toCheck.remove();
+            q.remove();
+            top = q.peek();
         }
-        System.out.println(result/2);
-        System.exit(0);
+
+        // print path
+        int doubleBacon = (Integer) graph.label(top);
+        Vertex<String> curr = top;
+        for (int i = doubleBacon; i >= 0; i--) {
+            System.out.println(curr.get());
+            Iterable<Edge<String>> ins = graph.incoming(curr);
+            for (Edge<String> e : ins) {
+                Vertex<String> v = graph.from(e);
+                Integer label = (Integer) graph.label(v);
+                if (label != null && label == i - 1) {
+                    curr = v;
+                    break;
+                }
+            }
+        }
+        System.out.println(doubleBacon / 2);
+        System.exit(0);*/
     }
 
     /**
