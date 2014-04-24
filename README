@@ -1,0 +1,14 @@
+Matthew Richard
+mricha56@jhu.edu
+
+In total our code throws 3 'unchecked cast' warnings, all of which
+are suppressed with @SuppressWarnings("unchecked"). The first two
+are in SparseGraph when we try and validate our Edges and Vertices,
+casting them from Edge and Vertex to our inner class, implementation-
+specific types DirectedEdge and IncidenceVertex. We have verified
+that our casts, though unchecked, are typesafe. In the first two
+warnings, we clearly verify that the edge or vertex is an instanceof
+one of our inner classes before casting into one of them. We are again
+typesafe in the third and last warning in KevinBacon.java; we cast
+the Object label returned by the graph to a Vertex, and we know this
+is possible because we've only labeled Vertices with other Vertices.
