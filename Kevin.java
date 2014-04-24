@@ -84,26 +84,24 @@ public final class Kevin {
         }
     }
 
-    // Perform a breadth-first search (BFS) starting from Kevin Bacon
-    // and stopping when (a) the graph is exhausted or (b) we found
-    // the actor we're looking for. Then print the path from the actor
-    // back to Kevin Bacon and exit the program. Since we're using BFS
-    // we can be sure that the resulting path is among the shortest ones.
+    @SuppressWarnings("unchecked") // typesafe because only labeling with Vertex-es
     private static void solveBacon() {
         Queue<Vertex<String>> q = new LinkedList<Vertex<String>>();
         q.add(bacon);
-        graph.label(bacon, 0);
+
+        // a link back to 'actor' serves as our marker that
+        // we've hit the end of the path
+        graph.label(bacon, actor);
 
         // find path
         Vertex<String> top = q.peek();
         while (top != actor) { // while queue !empty
-            int distance = (Integer) graph.label(top) + 1;
             Iterable<Edge<String>> outs = graph.outgoing(top);
             for (Edge<String> e : outs) {
                 Vertex<String> to = graph.to(e);
                 if (graph.label(to) == null) {
                     q.add(to);
-                    graph.label(to, distance);
+                    graph.label(to, top);
                 }
             }
             q.remove();
@@ -111,21 +109,14 @@ public final class Kevin {
         }
 
         // print path
-        int doubleBacon = (Integer) graph.label(top);
+        int distance = -1;
         Vertex<String> curr = top;
-        for (int i = doubleBacon; i >= 0; i--) {
+        do {
+            distance++;
             System.out.println(curr.get());
-            Iterable<Edge<String>> ins = graph.incoming(curr);
-            for (Edge<String> e : ins) {
-                Vertex<String> v = graph.from(e);
-                Integer label = (Integer) graph.label(v);
-                if (label != null && label == i - 1) {
-                    curr = v;
-                    break;
-                }
-            }
-        }
-        System.out.println(doubleBacon / 2);
+            curr = (Vertex<String>) graph.label(curr);
+        } while (curr != actor);
+        System.out.println(distance / 2);
         System.exit(0);
     }
 
