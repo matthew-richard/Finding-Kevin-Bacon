@@ -113,7 +113,7 @@ public final class SparseGraph<V, E> implements Graph<V, E> {
         return newVertex;
     }
 
-    private boolean isDuplicateEdge(Collection<DirectedEdge> c, 
+    private boolean isDuplicateEdge(Collection<DirectedEdge> c,
           IncidenceVertex from, IncidenceVertex to) {
         for (DirectedEdge e : c) {
             if (e.from == from && e.to == to) {
@@ -138,7 +138,7 @@ public final class SparseGraph<V, E> implements Graph<V, E> {
         t = this.validateVertex(to);
         search = f.outgoing.size() <= t.incoming.size()
             ? f.outgoing : t.incoming;
-        if (isDuplicateEdge(search, f, t)) {
+        if (this.isDuplicateEdge(search, f, t)) {
             throw new IllegalArgumentException("Can't insert duplicate edges.");
         }
 

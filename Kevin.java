@@ -84,7 +84,7 @@ public final class Kevin {
         }
     }
 
-    @SuppressWarnings("unchecked") // typesafe because only labeling with Vertex-es
+    @SuppressWarnings("unchecked") // typesafe because only Vertex labels
     private static void solveBacon() {
         Queue<Vertex<String>> q = new LinkedList<Vertex<String>>();
         q.add(bacon);
