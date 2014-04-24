@@ -95,7 +95,7 @@ public final class Kevin {
 
         // find path
         Vertex<String> top = q.peek();
-        while (top != actor) { // while queue !empty
+        while (top != actor) {
             Iterable<Edge<String>> outs = graph.outgoing(top);
             for (Edge<String> e : outs) {
                 Vertex<String> to = graph.to(e);
@@ -108,15 +108,12 @@ public final class Kevin {
             top = q.peek();
         }
 
-        // print path
-        int distance = -1;
+        // print path (using Vertex labels) and exit
         Vertex<String> curr = top;
         do {
-            distance++;
             System.out.println(curr.get());
             curr = (Vertex<String>) graph.label(curr);
         } while (curr != actor);
-        System.out.println(distance / 2);
         System.exit(0);
     }
 
