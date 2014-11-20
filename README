@@ -1,14 +1,39 @@
-Matthew Richard
-mricha56@jhu.edu
+Finding Kevin Bacon
+===================
 
-In total our code throws 3 'unchecked cast' warnings, all of which
-are suppressed with @SuppressWarnings("unchecked"). The first two
-are in SparseGraph when we try and validate our Edges and Vertices,
-casting them from Edge and Vertex to our inner class, implementation-
-specific types DirectedEdge and IncidenceVertex. We have verified
-that our casts, though unchecked, are typesafe. In the first two
-warnings, we clearly verify that the edge or vertex is an instanceof
-one of our inner classes before casting into one of them. We are again
-typesafe in the third and last warning in KevinBacon.java; we cast
-the Object label returned by the graph to a Vertex, and we know this
-is possible because we've only labeled Vertices with other Vertices.
+This is the repository for my 9th assignment in Data Structures, a course I took at JHU as a freshman in Spring 2014!
+
+Currently the assignment is available on http://gaming.jhu.edu/~phf/2014/spring/cs226/assignment-graph-bacon.shtml, but if that isn't the case in the future I've also saved it to Assignment.html.
+
+There were two parts to this assignment:
+
+    1. Implement a direct, sparse graph, and provide a method to
+       print it in a format that the GraphViz graph visualizer
+       can understand. Test it using the JUnit unit testing
+       framework.
+       
+    2. Having implemented this graph, feed it the IMDB database
+       of which actors starred in what movies, then use Breadth-
+       First Search to automate the game Six Degrees of Kevin
+       Bacon
+       
+BUILDING:
+'make' Should build Kevin.class (run this to play Six Degrees of Kevin Bacon), SparseGraph.class (the graph), and TestGraph.class (the JUnit tests for the graph), provided JUnit, ie junit-4.11.jar, is in the working directory.
+
+IMPORTANT FILES:
+*** Note: Lots of boilerplate was already provided for this assignment. The only files students were asked to change and submit were Kevin.java, SparseGraph.java, and TestGraph.java. ***
+
+action06.txt            IMDB database for which actors starred in which *action*
+                        movies. Significantly smaller than all06.txt.
+
+all06.txt               Same as above, but for *all* movies. This is much larger
+                        than action06.txt, but makes Kevin.class take longer
+                        to complete.
+                        
+Kevin.java              Compile and run to play Six Degrees of Kevin Bacon. Eg
+                        'java Kevin action06.txt "De Rosselli, Rex"' returns
+                        the Bacon number of Rex De Rosselli.
+                        
+TestGraph.java          JUnit tests for SparseGraph.java. To run, use command
+                        'java -cp junit-4.11.jar:. org.junit.runner.JUnitCore'
+                        or alternatively, 'make testrun'.
