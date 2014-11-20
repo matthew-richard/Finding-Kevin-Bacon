@@ -23,7 +23,7 @@ BUILDING:
 IMPORTANT FILES:
 *** Note: Lots of boilerplate was already provided for this assignment. The only files students were asked to change and submit were Kevin.java, SparseGraph.java, and TestGraph.java. ***
 
-Assignment.html         The assignment description (written by Peter Frohlich)
+Assignment.html         The assignment description
 
 action06.txt            IMDB database for which actors starred in which *action*
                         movies. Significantly smaller than all06.txt.
